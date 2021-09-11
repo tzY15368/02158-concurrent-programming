@@ -1,0 +1,83 @@
+-------------------PROBLEM 1---------------------
+C:\old_d\github\02158\src>javac man1/Search.java && java man1.Search -R 10 man1/100.txt fairest
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+
+File=man1/100.txt, pattern='fairest'
+ntasks=1, nthreads=1, warmups=0, runs=10
+
+Single task: Run no.  0: 42 occurrences found in 0.059232 s
+Single task: Run no.  1: 42 occurrences found in 0.052803 s
+Single task: Run no.  2: 42 occurrences found in 0.052789 s
+Single task: Run no.  3: 42 occurrences found in 0.036339 s
+Single task: Run no.  4: 42 occurrences found in 0.036422 s
+Single task: Run no.  5: 42 occurrences found in 0.036377 s
+Single task: Run no.  6: 42 occurrences found in 0.036389 s
+Single task: Run no.  7: 42 occurrences found in 0.036455 s
+Single task: Run no.  8: 42 occurrences found in 0.036391 s
+Single task: Run no.  9: 42 occurrences found in 0.036341 s
+
+Single task (avg.): 0.041954 s
+
+------------------------------------------------------------------
+
+C:\old_d\github\02158\src>javac man1/Search.java && java man1.Search -R 10 -W 4 man1/100.txt fairest
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+
+File=man1/100.txt, pattern='fairest'
+ntasks=1, nthreads=1, warmups=4, runs=10
+
+Single task: Run no.  0: 42 occurrences found in 0.036417 s
+Single task: Run no.  1: 42 occurrences found in 0.036790 s
+Single task: Run no.  2: 42 occurrences found in 0.036408 s
+Single task: Run no.  3: 42 occurrences found in 0.036406 s
+Single task: Run no.  4: 42 occurrences found in 0.036352 s
+Single task: Run no.  5: 42 occurrences found in 0.036423 s
+Single task: Run no.  6: 42 occurrences found in 0.036324 s
+Single task: Run no.  7: 42 occurrences found in 0.036780 s
+Single task: Run no.  8: 42 occurrences found in 0.036380 s
+Single task: Run no.  9: 42 occurrences found in 0.036343 s
+
+Single task (avg.): 0.036462 s
+
+------------------PROBLEM 2------------------------
+
+C:\old_d\github\02158\src>javac man1/Search.java   && java man1.Search -R 10 -W 4 man1/xtest.txt xxxx
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+
+File=man1/xtest.txt, pattern='xxxx'
+ntasks=1, nthreads=1, warmups=4, runs=10
+
+Single task: Run no.  0: 2605 occurrences found in 0.000207 s
+Single task: Run no.  1: 2605 occurrences found in 0.000225 s
+Single task: Run no.  2: 2605 occurrences found in 0.000206 s
+Single task: Run no.  3: 2605 occurrences found in 0.000198 s
+Single task: Run no.  4: 2605 occurrences found in 0.000295 s
+Single task: Run no.  5: 2605 occurrences found in 0.000228 s
+Single task: Run no.  6: 2605 occurrences found in 0.000237 s
+Single task: Run no.  7: 2605 occurrences found in 0.000232 s
+Single task: Run no.  8: 2605 occurrences found in 0.000280 s
+Single task: Run no.  9: 2605 occurrences found in 0.000231 s
+
+Single task (avg.): 0.000234 s
+
+Using  1 tasks: Run no.  0: 2605 occurrences found in 0.000333 s
+Using  1 tasks: Run no.  1: 2605 occurrences found in 0.000261 s
+Using  1 tasks: Run no.  2: 2605 occurrences found in 0.000249 s
+Using  1 tasks: Run no.  3: 2605 occurrences found in 0.000258 s
+Using  1 tasks: Run no.  4: 2605 occurrences found in 0.000249 s
+Using  1 tasks: Run no.  5: 2605 occurrences found in 0.000256 s
+Using  1 tasks: Run no.  6: 2605 occurrences found in 0.000255 s
+Using  1 tasks: Run no.  7: 2605 occurrences found in 0.000268 s
+Using  1 tasks: Run no.  8: 2605 occurrences found in 0.000248 s
+Using  1 tasks: Run no.  9: 2605 occurrences found in 0.000248 s
+
+Using  1 tasks (avg.): 0.000262 s
+
+
+Average speedup: 0.89
+
+
+-------------------------- PROBLEM 3------------------------------
