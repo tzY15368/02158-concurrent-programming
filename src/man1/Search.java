@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.io.*;
+import java.util.stream.Collectors;
 
 /**
  * Search task. No need to modify.
@@ -240,7 +241,7 @@ public class Search {
             // Add tasks to list here
             for(int i=0;i<ntasks;i++){
                 int shard_length = len / ntasks;
-                int to = (i+1)*shard_length -1;
+                int to = (i+1)*shard_length -1 + pattern.length;
                 if(i!=ntasks-1){
                     to = len - (ntasks-1)*shard_length;
                 }
@@ -271,7 +272,8 @@ public class Search {
                     List<Integer> r1 = f.get();
                     result.addAll(r1);
                 }
-
+                // remove duplicates
+                result = result.stream().distinct().collect(Collectors.toList());
 
                 time = (double) (System.nanoTime() - start) / 1e9;
                 totalTime += time;
