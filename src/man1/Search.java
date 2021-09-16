@@ -193,7 +193,7 @@ public class Search {
                     fname, new String(pattern), ntasks, nthreads, warmups, runs);
 
             /* Setup execution engine */
-            ExecutorService engine = Executors.newSingleThreadExecutor();
+            ExecutorService engine = Executors.newFixedThreadPool(nthreads);//newCachedThreadPool();//Executors.newSingleThreadExecutor();
 
             /**********************************************
              * Run search using a single task
@@ -237,14 +237,17 @@ public class Search {
 //+++++++++ Uncomment for Problem 2+
 
             // Create list of tasks
+            System.out.println(ntasks);
+
             List<SearchTask> taskList = new ArrayList<SearchTask>();
             // Add tasks to list here
             for(int i=0;i<ntasks;i++){
                 int shard_length = len / ntasks;
                 int to = (i+1)*shard_length -1 + pattern.length;
-                if(i!=ntasks-1){
-                    to = len - (ntasks-1)*shard_length;
+                if(i==ntasks-1){
+                    to = len;
                 }
+                System.out.printf("from %d to %d|",i*shard_length,to);
                 SearchTask st = new SearchTask(text,pattern,i*shard_length,to);
                 taskList.add(st);
             }
@@ -273,7 +276,7 @@ public class Search {
                     result.addAll(r1);
                 }
                 // remove duplicates
-                result = result.stream().distinct().collect(Collectors.toList());
+                //result = result.stream().distinct().collect(Collectors.toList());
 
                 time = (double) (System.nanoTime() - start) / 1e9;
                 totalTime += time;
@@ -291,7 +294,7 @@ public class Search {
                 System.out.println("\nERROR: lists differ");
             }
             System.out.printf("\n\nAverage speedup: %1.2f\n\n", singleTime / multiTime);
-
+            writeData(String.format("number of task=%d, sppedup ratio=%1.2f",ntasks,singleTime/multiTime));
 //++++++++++*/
 
             /**********************************************
