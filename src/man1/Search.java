@@ -184,6 +184,7 @@ public class Search {
 
     public static void main(String[] argv) {
         try {
+            int processorCount = Runtime.getRuntime().availableProcessors();
             long start;
             double time, totalTime = 0.0;
 
@@ -193,7 +194,9 @@ public class Search {
                     fname, new String(pattern), ntasks, nthreads, warmups, runs);
 
             /* Setup execution engine */
-            ExecutorService engine = Executors.newFixedThreadPool(nthreads);//newCachedThreadPool();//Executors.newSingleThreadExecutor();
+            //ExecutorService engine = Executors.newFixedThreadPool(nthreads);
+            ExecutorService engine = Executors.newCachedThreadPool();
+            //ExecutorService engine = Executors.newSingleThreadExecutor();
 
             /**********************************************
              * Run search using a single task
@@ -294,7 +297,7 @@ public class Search {
                 System.out.println("\nERROR: lists differ");
             }
             System.out.printf("\n\nAverage speedup: %1.2f\n\n", singleTime / multiTime);
-            writeData(String.format("number of task=%d, sppedup ratio=%1.2f",ntasks,singleTime/multiTime));
+            writeData(String.format("%d %1.2f %d",ntasks,singleTime/multiTime,processorCount));
 //++++++++++*/
 
             /**********************************************
