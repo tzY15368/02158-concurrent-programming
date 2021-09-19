@@ -9,8 +9,8 @@ for i in range(1,10):
     r = r + mult*i
     base_range.append(r)
 
-for ntasks in base_range:
-    for nthreads in base_range:
+for nthreads in base_range:
+    for ntasks in base_range:
         print(ntasks,nthreads)
         os.system(f"{cmd} {ntasks} {nthreads}")
 
