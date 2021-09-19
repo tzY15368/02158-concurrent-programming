@@ -11,7 +11,7 @@ for i in range(1,10):
 
 for nthreads in base_range:
     for ntasks in base_range:
-        print(ntasks,nthreads)
+        print(nthreads,ntasks)
         os.system(f"{cmd} {ntasks} {nthreads}")
 
 """

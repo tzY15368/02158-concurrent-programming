@@ -250,7 +250,7 @@ public class Search {
                 if(i==ntasks-1){
                     to = len;
                 }
-                System.out.printf("from %d to %d|",i*shard_length,to);
+                //System.out.printf("from %d to %d|",i*shard_length,to);
                 SearchTask st = new SearchTask(text,pattern,i*shard_length,to);
                 taskList.add(st);
             }
