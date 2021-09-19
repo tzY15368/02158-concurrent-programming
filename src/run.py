@@ -1,6 +1,6 @@
 import os
 # javac man1/Search.java &&
-cmd = "java man1.Search -R 10 -d log-p4.txt -W 4 man1/100.txt fairing"
+cmd = "java man1.Search -R 1 -d log-p4.txt -W 4 man1/100.txt fairing"
 
 base_range = list(range(1,21))
 r = 20
