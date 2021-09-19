@@ -297,7 +297,7 @@ public class Search {
                 System.out.println("\nERROR: lists differ");
             }
             System.out.printf("\n\nAverage speedup: %1.2f\n\n", singleTime / multiTime);
-            writeData(String.format("%d %d %1.2f %d",ntasks,nthreads,singleTime/multiTime,processorCount));
+            writeData(String.format("%d %d %1.2f %d",nthreads,ntasks,singleTime/multiTime,processorCount));
 //++++++++++*/
 
             /**********************************************
