@@ -3,7 +3,7 @@
 //Course 02158 Concurrent Programming, DTU, Fall 2021
 
 //Hans Henrik Lovengreen     Sep 29, 2021
-package man2;
+
 public class Alley {
 
     protected Alley() { }
