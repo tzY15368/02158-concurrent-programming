@@ -80,10 +80,11 @@ active proctype Coordinator()
 		for (i: 0 .. (N-1) ) {
 			if 
 				:: enter[i] && incrit==0 && (okeyed == 0) /* && (enqueued[i] == 0) */-> ENQUEUE(i);
-												enqueued[i]=1;
+												                                    enqueued[i]=1;
 				:: !(enter[i]  && incrit==0 && (okeyed==0) /* && (enqueued[i] == 0) */ ) -> skip
 			fi 
 		}
+
 		DEQUEUE();
 		ok[dequeueResult]= true;
 		okeyed++;

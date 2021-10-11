@@ -4,7 +4,7 @@
  *   Skeleton PROMELA model of mutual exlusion by coordinator
  */
 
-#define N 2
+#define N 4
 
 bool enter[N];  /* Request to enter flags */
 bool ok[N];     /* Entry granted flags    */
