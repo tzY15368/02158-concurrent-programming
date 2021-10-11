@@ -4,7 +4,7 @@
 
 //Hans Henrik Lovengreen     Sep 29, 2021
 
-
+package man2;
 public class CarTest extends Thread {
 
     CarTestingI cars;

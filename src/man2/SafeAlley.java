@@ -1,4 +1,4 @@
-//Skeleton implementation of a safe Alley class
+package man2;//Skeleton implementation of a safe Alley class
 //Mandatory assignment 2
 //Course 02158 Concurrent Programming, DTU, Fall 2021
 
