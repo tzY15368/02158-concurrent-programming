@@ -1,3 +1,5 @@
+package man2;
+
 import java.util.HashMap;
 
 //Prototype implementation of Field class
@@ -8,7 +10,7 @@ import java.util.HashMap;
 
 public class Field {
 
-    private HashMap<Pos,Semaphore> currentPos;
+    private HashMap<Pos, Semaphore> currentPos;
 
     public Field() {
         System.out.println("initiated field");
@@ -20,7 +22,7 @@ public class Field {
         if(!currentPos.containsKey(pos)){
             currentPos.put(pos, new Semaphore(1));
         }
-        currentPos.get(pos).P(); 
+        currentPos.get(pos).P();
 
     }
 
