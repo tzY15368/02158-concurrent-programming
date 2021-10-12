@@ -10,7 +10,7 @@ active [N] proctype carOneWay() {
 entry:	
     atomic{n2 == 0 -> n1++}
 crit:
-    /* critical section */
+    /* In the Alley */
     skip;
 exit:
     atomic{n1--;}   // not needed atomic statement in promella but used for readability
@@ -26,7 +26,7 @@ active [N] proctype carOtherWay() {
 entry:	
     atomic{n1 == 0 -> n2++}
 crit:
-    /* critical section */
+    /* In the Alley */
     skip;
 exit:
     atomic{n2--;}   // not needed atomic statement in promella but used for readability
