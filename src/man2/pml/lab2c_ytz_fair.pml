@@ -40,6 +40,7 @@ exit:
 		/* Non-critical setion (may or may not terminate) */
 		do 
 		//:: true -> skip 
+		// make sure the process terminates, ensuring fairness property
 		:: break 
 		od
 
@@ -53,6 +54,8 @@ active proctype Coordinator()
 	::	
 		/*  Your code here instead of skip*/
 		//skip
+		// round robin scheduler, permits the next element in the array of processes
+		// to enter the critical area
 		i = i % N;
 		if 
 		:: enter[i] -> ok[i] = true; (ok[i]==false) ->
