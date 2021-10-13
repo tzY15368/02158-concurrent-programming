@@ -1,77 +1,93 @@
-#define N 3
-#define semaphore byte   /* define a sempahore */
+#define N 6
 
-int n1 = 0; //number of cars in alley that go one way
-int n2 = 0; //number of cars in alley that go the other way
+int up = 0;
+int down = 0;
 
-semaphore e = 1;  
-semaphore s1 = 0;  // semaphore for carOneWay
-semaphore s2 = 0;  // semaphore for carOtherWay
+int eSem = 1
+int upSem = 0;
+int downSem = 0; 
 
-int d1 = 0;  // number of carOneWay delayed
-int d2 = 0;  // number of carOtherWay dealyed
+int upCrit = 0;
+int downCrit = 0;
 
-/*  P and V functions for mutex semaphores  */
-inline V(s) {s++;}
-inline P(s) {atomic{ s>0 ; s--}}
+int tmp;
 
-inline SIGNAL() {
-    if :: n2 == 0 && d1 > 0 -> d1--; V(s1)  // awaken a carOneWay
-       :: n1 == 0 && d2 > 0 -> d2--; V(s2)  // awaken a carOtherWay
-       :: ! ( (n2 == 0 && d1) || (n1 == 0 && d2) )-> V(e)
-    fi
+int downQueueLen = 0;
+int upQueueLen = 0;
+
+inline P(s){ atomic{ s > 0 -> s = s-1}}
+inline V(s){ atomic{ s = s+1}}
+inline incr(s){ tmp = s + 1; s = tmp;}
+inline decr(s) {tmp = s-1; s = tmp;}
+
+
+
+inline enter(no){
+        if
+        :: no < 5 -> P(eSem); 
+                if
+                :: down > 0 -> incr(upQueueLen); V(eSem); P(upSem)
+                :: else -> skip;
+                fi;
+                incr(up);
+                if
+                :: upQueueLen > 0 -> decr(upQueueLen); V(upSem);
+                :: else -> V(eSem);
+                fi;
+
+        :: no > 4 -> P(eSem);
+                if
+                :: up > 0 -> incr(downQueueLen); V(eSem); P(downSem)
+                :: else -> skip;
+                fi;
+                incr(down);
+                if
+                :: downQueueLen > 0 -> decr(downQueueLen); V(downSem);
+                :: else -> V(eSem);
+                fi;
+
+        fi;
 }
 
-active [N] proctype carOneWay() {
-    do
-    :: skip; 
-entry:	
-    /* atomic{n2 == 0 -> n1++} */
-    P(e);
-    if :: n2 > 0 -> d1++; V(e); P(s1) fi 
-    n1++;
-    SIGNAL();
-crit:
-    /* critical section */
-    skip;
-exit:
-    atomic{n1--;}  
-    P(e);
-    n1--;
-    SIGNAL;
+inline leave(no){
+        P(eSem);
+        if
+        :: no < 5 -> decr(up);
+                if
+                :: (up == 0 && downQueueLen > 0) -> decr(downQueueLen); V(downSem);
+                :: else -> V(eSem);
+                fi
 
-    /* non critical section*/
-    do :: true -> skip :: break od
-    od
+        :: no > 4 -> decr(down);
+                if
+                :: (down == 0 && upQueueLen > 0) -> decr(upQueueLen); V(upSem);
+                :: else -> V(eSem);
+                fi
+        fi
 }
 
+active [N] proctype go(){
+        do
+        :: true -> 
+            enter(_pid);
+            if
+            :: _pid < 5 -> downCrit++;
+            :: _pid > 4 -> upCrit++;
+            fi;
+            
+            if
+            :: _pid < 5 -> downCrit--;
+            :: _pid > 4 -> upCrit--;
+            fi;
 
-
-active [N] proctype carOtherWay() {
-    do
-    :: skip; 
-entry:	
-    /* atomic{n1 == 0 -> n2++} */
-    P(e);
-    if :: n1 > 0 -> d2++; V(e); P(s2)  fi 
-    n2++;
-    SIGNAL();
-crit:
-    /* critical section */
-    skip;
-exit:
-    atomic{n2--;}  
-    P(e);
-    n2--;
-    SIGNAL;
-
-    /* non critical section*/
-    do :: true -> skip :: break od
-    od
+            leave(_pid);
+        od
 }
 
+active proctype Check(){
+	(upCrit > 0 && downCrit > 0) -> assert(false);
+}
 
-
-active proctype Check() {
-    assert( e + s1 +s2 == 1) 
+active proctype CheckBinary(){
+    (upSem + downSem + eSem > 1) -> assert(false);
 }
