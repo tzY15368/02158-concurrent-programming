@@ -1,3 +1,4 @@
+package minilab4;
 class Counter {
     int x = 0;
 
