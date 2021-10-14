@@ -4,3 +4,4 @@ out/
 100.txt
 xtest.txt
 src/man1/*.class
+*.class
