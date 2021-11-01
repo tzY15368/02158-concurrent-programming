@@ -23,7 +23,7 @@ class NaiveBarrier extends Barrier {
 
         synchronized (this) {
             System.out.println("arrived:"+arrived);
-            if (arrived < 8) {
+            if (arrived < 9) {
                 wait();
             } else {
                 arrived = 0;
@@ -47,11 +47,12 @@ class NaiveBarrier extends Barrier {
         }
     }
 
-/*
+
     @Override
     // May be (ab)used for robustness testing
-    public void set(int k) { 
+    public synchronized void set(int k) {
+        notifyAll();
     }    
-*/
+
 
 }
