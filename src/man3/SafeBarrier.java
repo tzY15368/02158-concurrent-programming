@@ -5,21 +5,40 @@
 //Hans Henrik Lovengreen     Oct 28, 2021
 package man3;
 class SafeBarrier extends Barrier {
-    
+    int arrived = 0;
+    boolean active = false;
+    boolean canGo = true;
     public SafeBarrier(CarDisplayI cd) {
         super(cd);
     }
 
     @Override
-    public void sync(int no) throws InterruptedException {
+    public synchronized void sync(int no) throws InterruptedException {
+        if(!active)return;
+        arrived++;
+        if(arrived < 8){
+            canGo = false;
+            while(canGo==false){
+                wait();
+            }
+        } else {
+
+            arrived =  0;
+            canGo = true;
+            notifyAll();
+        }
     }
 
     @Override
-    public void on() {
+    public synchronized void on() {
+        this.active = true;
     }
 
     @Override
-    public void off() {
+    public synchronized void off() {
+        this.active = false;
+        this.arrived = 0;
+        notifyAll();
     }
 
 /*    

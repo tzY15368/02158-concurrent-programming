@@ -13,7 +13,10 @@ public abstract class Barrier {
     }
        
     public static Barrier create(CarDisplayI cd) {
-        return new NaiveBarrier(cd);
+
+        //return new NaiveBarrier(cd);
+        return new SafeBarrier(cd);
+        //return new DynamicBarrier(cd);
     }
 
     public void sync(int no) throws InterruptedException { 

@@ -4,11 +4,12 @@
 
 //Hans Henrik Lovengreen     Oct 28, 2021
 package man3;
+
 class NaiveBarrier extends Barrier {
-    
+
     int arrived = 0;
     boolean active = false;
-   
+
     public NaiveBarrier(CarDisplayI cd) {
         super(cd);
     }
@@ -17,12 +18,12 @@ class NaiveBarrier extends Barrier {
     public void sync(int no) throws InterruptedException {
 
         if (!active) return;
-        
+
         arrived++;
-            
-        synchronized(this) {
-                
-            if (arrived < 9) { 
+
+        synchronized (this) {
+            System.out.println("arrived:"+arrived);
+            if (arrived < 8) {
                 wait();
             } else {
                 arrived = 0;
@@ -41,7 +42,7 @@ class NaiveBarrier extends Barrier {
     public void off() {
         active = false;
         arrived = 0;
-        synchronized(this) {
+        synchronized (this) {
             notifyAll();
         }
     }
@@ -51,6 +52,6 @@ class NaiveBarrier extends Barrier {
     // May be (ab)used for robustness testing
     public void set(int k) { 
     }    
-*/    
+*/
 
 }
