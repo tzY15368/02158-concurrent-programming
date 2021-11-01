@@ -16,7 +16,7 @@ class SafeBarrier extends Barrier {
     public synchronized void sync(int no) throws InterruptedException {
         if(!active)return;
         arrived++;
-        if(arrived < 8){
+        if(arrived < 9){
             canGo = false;
             while(canGo==false){
                 wait();

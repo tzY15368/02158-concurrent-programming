@@ -27,6 +27,10 @@ class Conductor extends Thread {
     Pos curpos;                      // Current position 
     Pos newpos;                      // New position to go to
 
+    CarI me;
+
+    boolean inAlley = false;
+
     public Conductor(int no, CarDisplayI cd, Gate g, Field field, Alley alley, Barrier barrier) {
 
         this.no = no;
@@ -89,10 +93,12 @@ class Conductor extends Thread {
     boolean atBarrier(Pos pos) {
         return pos.equals(barpos);
     }
-
     public void run() {
+        this.cd.println("started car "+this.no);
         try {
             CarI car = cd.newCar(no, col, startpos);
+            this.me = car;
+
             curpos = startpos;
             field.enter(no, curpos);
             cd.register(car);
@@ -108,17 +114,31 @@ class Conductor extends Thread {
 
                 if (atBarrier(curpos)) barrier.sync(no);
                 
-                if (atEntry(curpos)) alley.enter(no);
+                if (atEntry(curpos)) {
+                    alley.enter(no);
+                    this.inAlley = true;
+                };
                 field.enter(no, newpos);
 
                 car.driveTo(newpos);
 
                 field.leave(curpos);
-                if (atExit(newpos)) alley.leave(no);
+                if (atExit(newpos)) {
+                    alley.leave(no);
+                    this.inAlley = false;
+                };
 
                 curpos = newpos;
             }
 
+        } catch (InterruptedException ie){
+            this.cd.println("car"+this.no+"is interrupted");
+            // fixme: cars go nowhere when blocked with car ahead of it removed while blocked
+            this.field.leave(curpos);
+            if(this.inAlley){
+                this.alley.leave(no);
+            }
+            this.cd.deregister(me);
         } catch (Exception e) {
             cd.println("Exception in Conductor no. " + no);
             System.err.println("Exception in Conductor no. " + no + ":" + e);
@@ -173,12 +193,24 @@ public class CarControl implements CarControlI{
         barrier.set(k);
    }
     
-    public void removeCar(int no) { 
-        cd.println("Remove Car not implemented in this version");
+    public void removeCar(int no) {
+        if(this.conductor[no]!=null){
+            this.conductor[no].interrupt();
+        }
+        this.conductor[no] = null;
     }
 
-    public void restoreCar(int no) { 
-        cd.println("Restore Car not implemented in this version");
+    public void restoreCar(int no) {
+        // fixme: restoring cars sometimes doesnt work, doesnt register on gui??
+        if(this.conductor[no]!=null){
+            cd.println("car is still on the playground, cannot restore");
+            return;
+        }
+        cd.println("restoring car"+no);
+
+        this.conductor[no] = new Conductor(no,cd,gate[no],field,alley,barrier);
+        this.conductor[no].setName("Conductor-"+no);
+        this.conductor[no].start();
     }
 
     /* Speed settings for testing purposes */
