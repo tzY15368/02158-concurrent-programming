@@ -1,41 +1,40 @@
-//Basic implementation of Alley class (skeleton)
+//Implementation of Alley class with inner alley (skeleton)
 //CP Lab 3
 //Course 02158 Concurrent Programming, DTU, Fall 2021
 
 //Hans Henrik Lovengreen     Oct 25, 2021
-package man3;
-//Basic implementation of Alley class (skeleton)
-//CP Lab 3
-//Course 02158 Concurrent Programming, DTU, Fall 2021
+package lab3;
 
-//Hans Henrik Lovengreen     Oct 25, 2021
-
-public class BasicAlley extends Alley {
+public class DoubleAlley extends Alley {
 
     int up;
     int down;
-    boolean dir;
-    boolean UP = true;
-    boolean DOWN = false;
 
-    BasicAlley() {
+    int innerUp;
+
+    DoubleAlley() {
         this.up = 0;
         this.down = 0;
-        this.dir = UP;
     }
 
     @Override
     /* Block until car no. may enter alley */
     public synchronized void enter(int no) throws InterruptedException {
         // 1234 goes down
-        if(no > 4) {
+        if (no > 4) {
             // spurious wake ups
-            while(dir==DOWN){
+            while (down > 0) {
                 wait();
             }
             up++;
-        } else {
-            while(dir==UP){
+            innerUp++;
+        } else if (no > 2) {
+            while (up > 0) {
+                wait();
+            }
+            down++;
+        } else if(no > 0) {
+            while(innerUp > 0){
                 wait();
             }
             down++;
@@ -48,19 +47,23 @@ public class BasicAlley extends Alley {
         if (no > 4) {
             up--;
             if(up==0){
-                dir = DOWN;
-                System.out.println("going"+dir);
                 notifyAll();
             }
         } else {
             down--;
-            if(down==0){
-                dir = UP;
-                System.out.println("going"+dir);
+            if (down == 0) {
                 notifyAll();
             }
         }
     }
 
-}
+    @Override
+    /* Register that car no. has left the inner alley */
+    public synchronized void leaveInner(int no) {
+        innerUp--;
+        if(innerUp==0){
+            notifyAll();
+        }
+    }
 
+}

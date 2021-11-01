@@ -4,7 +4,7 @@
 
 //Hans Henrik Lovengreen     Oct 25, 2021
 //
-package man3;
+package lab3;
 public class Pos {
 
     public int row;       // Note: public

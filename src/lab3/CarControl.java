@@ -3,7 +3,7 @@
 //Course 02158 Concurrent Programming, DTU, Fall 2021
 
 //Hans Henrik Lovengreen     Oct 25, 2021
-package man3;
+package lab3;
 
 import java.awt.Color;
 

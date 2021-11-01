@@ -4,7 +4,7 @@
 //Course 02220 Concurrent Programming
 
 //Hans Henrik Lovengreen   Sep 13, 2002
-package man3;
+package lab3;
 public class Semaphore {
 
     private int s = 0;
