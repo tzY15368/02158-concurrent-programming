@@ -4,22 +4,27 @@
 
 //Hans Henrik Lovengreen     Oct 28, 2021
 package man3;
-class RemBarrier extends Barrier {
+class RemBarrier extends DynamicBarrier {
     
     public RemBarrier(CarDisplayI cd) {
+
         super(cd);
     }
 
-    @Override
-    public void sync(int no) throws InterruptedException {
+    public void removeCar(){
+        if(this.thres>=1){
+            this.set(this.thres-1);
+        } else {
+            this.cd.println("no more cars to remove");
+        }
     }
 
-    @Override
-    public void on() {
-    }
-
-    @Override
-    public void off() {
+    public void restoreCar(){
+        if(this.thres <9){
+            this.set(this.thres+1);
+        } else {
+            this.cd.println("no more slots to restore");
+        }
     }
 
     /* Add further methods as needed */

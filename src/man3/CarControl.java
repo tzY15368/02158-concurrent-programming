@@ -155,7 +155,7 @@ public class CarControl implements CarControlI{
     Gate[] gate;              // Gates
     Field field;              // Field
     Alley alley;              // Alley
-    Barrier barrier;          // Barrier
+    RemBarrier barrier;          // Barrier
 
     public CarControl(CarDisplayI cd) {
         this.cd = cd;
@@ -163,7 +163,7 @@ public class CarControl implements CarControlI{
         gate = new Gate[9];
         field = new Field();
         alley = Alley.create();
-        barrier = Barrier.create(cd);
+        barrier = new RemBarrier(cd);//Barrier.create(cd);
 
         for (int no = 0; no < 9; no++) {
             gate[no] = Gate.create();
@@ -198,6 +198,8 @@ public class CarControl implements CarControlI{
             this.conductor[no].interrupt();
         }
         this.conductor[no] = null;
+        cd.println("resizing barrier");
+        this.barrier.removeCar();
     }
 
     public void restoreCar(int no) {
@@ -211,6 +213,7 @@ public class CarControl implements CarControlI{
         this.conductor[no] = new Conductor(no,cd,gate[no],field,alley,barrier);
         this.conductor[no].setName("Conductor-"+no);
         this.conductor[no].start();
+        this.barrier.restoreCar();
     }
 
     /* Speed settings for testing purposes */
