@@ -8,7 +8,9 @@ package man3;
 public abstract class Gate {
 
     public static Gate create() {
-        return new SemGate();              // Change to select implementation
+
+        return new MonGate();
+        //return new SemGate();              // Change to select implementation
     }
     
     public abstract void pass() throws InterruptedException; 

@@ -7,13 +7,30 @@ package man3;
 
 public class MonGate extends Gate {
 
-    public void pass() throws InterruptedException {
+    boolean isOpen = false;
+    public synchronized void pass() throws InterruptedException {
+        if(isOpen==false){
+            wait();
+        }
+        notifyAll();
     }
 
-    public void open() {
+    public synchronized void open() {
+        if(isOpen == false){
+            isOpen = true;
+            notifyAll();
+        }
     }
 
-    public void close() {
+    public synchronized void close() {
+        if(isOpen==true){
+            try {
+                wait();
+            } catch (InterruptedException e){
+
+            }
+            isOpen = false;
+        }
     }
 
 }
