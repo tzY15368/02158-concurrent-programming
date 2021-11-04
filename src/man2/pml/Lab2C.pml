@@ -38,10 +38,6 @@ exit:
 		enter[_pid] = false;
 
 		/* Non-critical setion (may or may not terminate) */
-		//do 
-		//:: true -> skip 
-		// make sure the process terminates, ensuring fairness property
-		//:: break
 		do :: true -> skip :: break od 
 		
 
