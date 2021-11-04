@@ -1,10 +1,10 @@
 //Specification of Car interface 
-//Mandatory assignment 3
+//CP Lab 3
 //Course 02158 Concurrent Programming, DTU, Fall 2021
 
-//Hans Henrik Lovengreen     Oct 28, 2021
+//Hans Henrik Lovengreen     Oct 25, 2021
+package lab3;
 
-package man3;
 interface CarI {
     /* 
      * Operations for controlling car movement

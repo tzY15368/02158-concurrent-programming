@@ -1,9 +1,9 @@
 //Implementation of CarControl class
-//Mandatory assignment 3
+//CP Lab 3
 //Course 02158 Concurrent Programming, DTU, Fall 2021
 
-//Hans Henrik Lovengreen     Oct 28, 2021
-package man3;
+//Hans Henrik Lovengreen     Oct 25, 2021
+package lab3;
 
 import java.awt.Color;
 
@@ -16,7 +16,6 @@ class Conductor extends Thread {
     
     Field field;                     // Field control
     Alley alley;                     // Alley control    
-    Barrier barrier;                 // Barrier control    
 
     int no;                          // Car number
     Pos startpos;                    // Start position (provided by GUI)
@@ -27,17 +26,12 @@ class Conductor extends Thread {
     Pos curpos;                      // Current position 
     Pos newpos;                      // New position to go to
 
-    CarI me;
-
-    boolean inAlley = false;
-
-    public Conductor(int no, CarDisplayI cd, Gate g, Field field, Alley alley, Barrier barrier) {
+    public Conductor(int no, CarDisplayI cd, Gate g, Field field, Alley alley) {
 
         this.no = no;
         this.cd = cd;
         this.field = field;
         this.alley = alley;
-        this.barrier = barrier;
         mygate = g;
         startpos = cd.getStartPos(no);
         barpos   = cd.getBarrierPos(no);  // For later use
@@ -81,24 +75,25 @@ class Conductor extends Thread {
         return pos.equals(startpos);
     }
 
+    /* Determine whether pos is right before alley is entered */
     boolean atEntry(Pos pos) {
-        return (pos.row ==  1 && pos.col ==  1) || (pos.row ==  2 && pos.col ==  1) || 
+        return (pos.row ==  1 && pos.col ==  3) || (pos.row ==  2 && pos.col ==  1) || 
                (pos.row == 10 && pos.col ==  0);
     }
 
+    /* Determine whether pos is right after alley is left */
     boolean atExit(Pos pos) {
-        return (pos.row ==  0 && pos.col ==  0) || (pos.row ==  9 && pos.col ==  1);
+        return (pos.row ==  0 && pos.col ==  2) || (pos.row ==  9 && pos.col ==  1);
     }
     
-    boolean atBarrier(Pos pos) {
-        return pos.equals(barpos);
+    /* Determine whether pos is right after car no. has left inner alley */
+    boolean atInnerExit(Pos pos) {
+        return (no > 4 && (pos.row==1 && pos.col==0));
     }
+    
     public void run() {
-        this.cd.println("started car "+this.no);
         try {
             CarI car = cd.newCar(no, col, startpos);
-            this.me = car;
-
             curpos = startpos;
             field.enter(no, curpos);
             cd.register(car);
@@ -112,33 +107,18 @@ class Conductor extends Thread {
 
                 newpos = nextPos(curpos);
 
-                if (atBarrier(curpos)) barrier.sync(no);
-                
-                if (atEntry(curpos)) {
-                    alley.enter(no);
-                    this.inAlley = true;
-                };
+                if (atEntry(curpos)) alley.enter(no);
                 field.enter(no, newpos);
 
                 car.driveTo(newpos);
 
                 field.leave(curpos);
-                if (atExit(newpos)) {
-                    alley.leave(no);
-                    this.inAlley = false;
-                };
+                if (atInnerExit(newpos)) alley.leaveInner(no);
+                if (atExit(newpos)) alley.leave(no);
 
                 curpos = newpos;
             }
 
-        } catch (InterruptedException ie){
-            this.cd.println("car"+this.no+"is interrupted");
-            // fixme: cars go nowhere when blocked with car ahead of it removed while blocked
-            this.field.leave(curpos);
-            if(this.inAlley){
-                this.alley.leave(no);
-            }
-            this.cd.deregister(me);
         } catch (Exception e) {
             cd.println("Exception in Conductor no. " + no);
             System.err.println("Exception in Conductor no. " + no + ":" + e);
@@ -155,7 +135,6 @@ public class CarControl implements CarControlI{
     Gate[] gate;              // Gates
     Field field;              // Field
     Alley alley;              // Alley
-    RemBarrier barrier;          // Barrier
 
     public CarControl(CarDisplayI cd) {
         this.cd = cd;
@@ -163,11 +142,10 @@ public class CarControl implements CarControlI{
         gate = new Gate[9];
         field = new Field();
         alley = Alley.create();
-        barrier = new RemBarrier(cd);//Barrier.create(cd);
 
         for (int no = 0; no < 9; no++) {
             gate[no] = Gate.create();
-            conductor[no] = new Conductor(no,cd,gate[no],field,alley,barrier);
+            conductor[no] = new Conductor(no,cd,gate[no],field,alley);
             conductor[no].setName("Conductor-" + no);
             conductor[no].start();
         } 
@@ -182,38 +160,30 @@ public class CarControl implements CarControlI{
     }
 
     public void barrierOn() { 
-        barrier.on();
+        cd.println("Barrier On not implemented in this version");
     }
 
-    public void barrierOff() {
-        barrier.off();
+    public void barrierOff() { 
+        cd.println("Barrier Off not implemented in this version");
     }
 
-   public void barrierSet(int k) {
-        barrier.set(k);
-   }
+    public void setLimit(int k) { 
+        cd.println("Setting of bridge limit not implemented in this version");
+    }
+
+    public void barrierSet(int k) { 
+        cd.println("Barrier threshold setting not implemented in this version");
+        // This sleep is solely for illustrating how blocking affects the GUI
+        // Remove when feature is properly implemented.
+        try { Thread.sleep(3000); } catch (InterruptedException e) { }
+    }
     
-    public void removeCar(int no) {
-        if(this.conductor[no]!=null){
-            this.conductor[no].interrupt();
-        }
-        this.conductor[no] = null;
-        cd.println("resizing barrier");
-        this.barrier.removeCar();
+    public void removeCar(int no) { 
+        cd.println("Remove Car not implemented in this version");
     }
 
-    public void restoreCar(int no) {
-        // fixme: restoring cars sometimes doesnt work, doesnt register on gui??
-        if(this.conductor[no]!=null){
-            cd.println("car is still on the playground, cannot restore");
-            return;
-        }
-        cd.println("restoring car"+no);
-
-        this.conductor[no] = new Conductor(no,cd,gate[no],field,alley,barrier);
-        this.conductor[no].setName("Conductor-"+no);
-        this.conductor[no].start();
-        this.barrier.restoreCar();
+    public void restoreCar(int no) { 
+        cd.println("Restore Car not implemented in this version");
     }
 
     /* Speed settings for testing purposes */
