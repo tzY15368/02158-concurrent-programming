@@ -38,11 +38,12 @@ exit:
 		enter[_pid] = false;
 
 		/* Non-critical setion (may or may not terminate) */
-		do 
+		//do 
 		//:: true -> skip 
 		// make sure the process terminates, ensuring fairness property
-		:: break 
-		od
+		//:: break
+		do :: true -> skip :: break od 
+		
 
 	od;
 }
@@ -58,9 +59,9 @@ active proctype Coordinator()
 		// to enter the critical area
 		i = i % N;
 		if 
-		:: enter[i] -> ok[i] = true; (ok[i]==false) ->
+		:: !enter[i] == false -> i++;
+		:: enter[i] -> ok[i] = true; (ok[i]==false) ->; i++;
 		fi;
-		i++;
 	od
 }
 
