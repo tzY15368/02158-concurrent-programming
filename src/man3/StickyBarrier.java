@@ -11,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 class StickyBarrier extends Barrier {
     private int capacity = 9;
     private int arrived = 0;
-    private boolean canGo = true;
     private boolean active = false;
     private ReentrantLock lock = new ReentrantLock(true);
     private Condition cond = lock.newCondition();
@@ -24,13 +23,13 @@ class StickyBarrier extends Barrier {
     public void sync(int no) throws InterruptedException {
         try {
             lock.lock();
-            if (!this.active) return;
+            if (!this.active)
+                return;
             if (arrived < this.capacity) {
                 this.arrived++;
-                this.cd.println("arrived="+arrived);
+                this.cd.println("arrived=" + arrived);
                 cond.await();
             } else {
-                //arrived--;
                 cond.signal();
                 cond.await();
             }
@@ -62,12 +61,11 @@ class StickyBarrier extends Barrier {
     public void set(int k) {
         lock.lock();
         this.cd.println("setting cap = " + k);
-        if (this.active && this.capacity > k) {
-
-            this.cd.println("letting " + (this.capacity - k) + "cars go");
-            this.arrived -= (this.capacity - k);
-            for (int i = 0; i < this.capacity - k; i++) {
+        if (this.active && this.arrived > k) {
+            this.cd.println("arrived=" + this.arrived);
+            for (int i = 0; i < this.arrived - k; i++) {
                 this.cond.signal();
+                this.arrived--;
             }
         }
         this.capacity = k;
