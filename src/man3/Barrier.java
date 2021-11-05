@@ -13,7 +13,7 @@ public abstract class Barrier {
     }
        
     public static Barrier create(CarDisplayI cd) {
-        Barrier b = new StickyBarrier(cd);//SafeBarrier(cd);//NaiveBarrier(cd);//DynamicBarrier(cd);
+        Barrier b = new SafeBarrier(cd);//NaiveBarrier(cd);//DynamicBarrier(cd);
         String msg = "using barrier: "+b.getClass();
         cd.println(msg);
         return b;
