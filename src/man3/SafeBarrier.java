@@ -38,6 +38,7 @@ class SafeBarrier extends Barrier {
     public synchronized void off() {
         this.active = false;
         this.arrived = 0;
+        this.canGo = true;
         notifyAll();
     }
 

@@ -17,33 +17,34 @@ class NaiveBarrier extends Barrier {
     @Override
     public void sync(int no) throws InterruptedException {
 
-        if (!active) return;
+        if (!active) return;                        // 4
+        //this.cd.println("sleeping 500");            
+        //Thread.sleep(500);                          
+        arrived++;                                  // 5
 
-        arrived++;
-
-        synchronized (this) {
-            System.out.println("arrived:"+arrived);
-            if (arrived < 9) {
-                wait();
+        synchronized (this) {                       // 6
+            System.out.println("arrived:"+arrived); // 7
+            if (arrived < 9) {                      // 8
+                wait();                             // 9
             } else {
                 arrived = 0;
                 notifyAll();
             }
 
         }
-    }
+    }                                               // 11          <--------- problem
 
     @Override
     public void on() {
-        active = true;
+        active = true;                                  // 2
     }
 
     @Override
     public void off() {
-        active = false;
-        arrived = 0;
+        active = false;                                 // 1
+        arrived = 0;                                    // 3
         synchronized (this) {
-            notifyAll();
+            notifyAll();                                // 10
         }
     }
 

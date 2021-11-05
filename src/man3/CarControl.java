@@ -155,15 +155,15 @@ public class CarControl implements CarControlI{
     Gate[] gate;              // Gates
     Field field;              // Field
     Alley alley;              // Alley
-    RemBarrier barrier;          // Barrier
-
+    //RemBarrier barrier;          // Barrier
+    Barrier barrier;
     public CarControl(CarDisplayI cd) {
         this.cd = cd;
         conductor = new Conductor[9];
         gate = new Gate[9];
         field = new Field();
         alley = Alley.create();
-        barrier = new RemBarrier(cd);//Barrier.create(cd);
+        barrier = Barrier.create(cd);
 
         for (int no = 0; no < 9; no++) {
             gate[no] = Gate.create();
@@ -193,16 +193,16 @@ public class CarControl implements CarControlI{
         barrier.set(k);
    }
     
-    public void removeCar(int no) {
+    public synchronized void removeCar(int no) {
         if(this.conductor[no]!=null){
             this.conductor[no].interrupt();
         }
         this.conductor[no] = null;
-        cd.println("resizing barrier");
-        this.barrier.removeCar();
+        //cd.println("resizing barrier");
+        //this.barrier.removeCar();
     }
 
-    public void restoreCar(int no) {
+    public synchronized void restoreCar(int no) {
         // fixme: restoring cars sometimes doesnt work, doesnt register on gui??
         if(this.conductor[no]!=null){
             cd.println("car is still on the playground, cannot restore");
@@ -213,7 +213,7 @@ public class CarControl implements CarControlI{
         this.conductor[no] = new Conductor(no,cd,gate[no],field,alley,barrier);
         this.conductor[no].setName("Conductor-"+no);
         this.conductor[no].start();
-        this.barrier.restoreCar();
+        //this.barrier.restoreCar();
     }
 
     /* Speed settings for testing purposes */

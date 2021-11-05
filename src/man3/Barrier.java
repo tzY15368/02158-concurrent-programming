@@ -13,10 +13,11 @@ public abstract class Barrier {
     }
        
     public static Barrier create(CarDisplayI cd) {
-
-        //return new NaiveBarrier(cd);
-        //return new SafeBarrier(cd);
-        return new DynamicBarrier(cd);
+        Barrier b = new SafeBarrier(cd);//NaiveBarrier(cd);//DynamicBarrier(cd);
+        String msg = "using barrier: "+b.getClass();
+        cd.println(msg);
+        System.out.println(msg);
+        return b;
     }
 
     public void sync(int no) throws InterruptedException { 
