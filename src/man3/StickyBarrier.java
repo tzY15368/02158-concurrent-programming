@@ -25,13 +25,14 @@ class StickyBarrier extends Barrier {
         try {
             lock.lock();
             if (!this.active) return;
-            this.arrived++;
-            if (arrived <= this.capacity) {
+            if (arrived < this.capacity) {
+                this.arrived++;
+                this.cd.println("arrived="+arrived);
                 cond.await();
             } else {
-                arrived--;
-
+                //arrived--;
                 cond.signal();
+                cond.await();
             }
         } catch (InterruptedException e) {
             System.out.println("interrupted");
