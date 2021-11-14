@@ -59,6 +59,7 @@ active proctype Coordinator()
 		:: enter[i] -> ok[i] = true; (ok[i]==false) ->; i++;
 		fi;
 	od
+
 }
 
 ltl fair1 { []( (P[0]@entry)-> <> (P[0]@crit) ) }
