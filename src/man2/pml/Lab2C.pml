@@ -34,8 +34,8 @@ crit:	/* Critical section */
   	
 exit: 
 		/* Your code here */
-		ok[_pid] = false;
 		enter[_pid] = false;
+		ok[_pid] = false;
 
 		/* Non-critical section (may or may not terminate) */
 		do :: true -> skip :: break od
