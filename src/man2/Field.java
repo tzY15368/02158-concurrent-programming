@@ -1,6 +1,7 @@
 package man2;
 
 import java.util.HashMap;
+import java.util.Map;
 
 //Prototype implementation of Field class
 //Mandatory assignment 2
@@ -9,26 +10,29 @@ import java.util.HashMap;
 //Hans Henrik Lovengreen     Sep 29, 2021
 
 public class Field {
-
-    private HashMap<Pos, Semaphore> currentPos;
+    // ensure immutability
+    static private Semaphore[][] currentPos;
 
     public Field() {
         System.out.println("initiated field");
-        currentPos = new HashMap<>();
+        currentPos = new Semaphore[11][12];
+        for(int i=0;i<11;i++)
+        {
+            for(int j=0;j<12;j++)
+            {
+                currentPos[i][j]=new Semaphore(1);
+            }
+        }
     }
 
     /* Block until car no. may safely enter tile at pos */
     public void enter(int no, Pos pos) throws InterruptedException {
-        if(!currentPos.containsKey(pos)){
-            currentPos.put(pos, new Semaphore(1));
-        }
-        currentPos.get(pos).P();
-
+        currentPos[pos.row][pos.col].P();
     }
 
     /* Release tile at position pos */
-    public void leave(Pos pos) {
-        currentPos.get(pos).V();
+    public void leave(Pos pos) throws InterruptedException {
+        currentPos[pos.row][pos.col].V();
     }
 
 }
