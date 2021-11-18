@@ -21,7 +21,7 @@ func p(name string) {
 	finished <- name
 }
 
-func main() {
+func donald() {
 	fmt.Println(runtime.GOMAXPROCS(0))
 	go p("Huey")
 	go p("Dewey")
