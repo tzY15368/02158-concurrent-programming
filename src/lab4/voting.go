@@ -87,13 +87,20 @@ func main() {
 
 	var tally Votes
 	for {
-		var v, ok = <-collectorChannels[6]
-		if !ok {
+		e := false
+		select {
+		case <-time.Tick(2 * time.Second):
+			fmt.Println("Current tally:", tally)
+		case v, ok := <-collectorChannels[6]:
+			if !ok {
+				e = true
+			}
+			tally.a += v.a
+			tally.b += v.b
+		}
+		if e {
 			break
 		}
-		tally.a += v.a
-		tally.b += v.b
-		fmt.Println("Current tally:", tally)
 	}
 
 	tot := tally.a + tally.b
