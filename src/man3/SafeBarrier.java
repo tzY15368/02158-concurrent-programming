@@ -4,27 +4,42 @@
 
 //Hans Henrik Lovengreen     Oct 28, 2021
 package man3;
+
 class SafeBarrier extends Barrier {
     int arrived = 0;
     boolean active = false;
-    boolean canGo = true;
+    boolean canGo = false;
+
     public SafeBarrier(CarDisplayI cd) {
         super(cd);
     }
 
     @Override
     public synchronized void sync(int no) throws InterruptedException {
-        if(!active)return;
+        if (!active)
+            return;
+        if (no == 0) {
+            cd.println("car 0 is synced");
+        }
+
+        // protect agianst fast cars
+        while (canGo && active) {
+            wait();
+        }
+
         arrived++;
-        if(arrived < 9){
-            canGo = false;
-            while(canGo==false){
+        if (arrived < 9) {
+            while (canGo != true && active) {
                 wait();
             }
         } else {
-
-            arrived =  0;
             canGo = true;
+            notifyAll();
+        }
+
+        arrived--;
+        if (arrived == 0) {
+            canGo = false;
             notifyAll();
         }
     }
@@ -37,16 +52,12 @@ class SafeBarrier extends Barrier {
     @Override
     public synchronized void off() {
         this.active = false;
-        this.arrived = 0;
-        this.canGo = true;
         notifyAll();
     }
 
-/*    
-    @Override
-    // May be (ab)used for robustness testing
-    public void set(int k) {
-    }
-*/
-    
+    /*
+     * @Override // May be (ab)used for robustness testing public void set(int k) {
+     * }
+     */
+
 }

@@ -9,28 +9,19 @@ public class MonGate extends Gate {
 
     boolean isOpen = false;
     public synchronized void pass() throws InterruptedException {
-        if(isOpen==false){
+        while(!isOpen){
             wait();
         }
-        notifyAll();
+        
     }
 
     public synchronized void open() {
-        if(isOpen == false){
-            isOpen = true;
-            notifyAll();
-        }
+        isOpen = true;
+        notifyAll();
     }
 
     public synchronized void close() {
-        if(isOpen==true){
-            try {
-                wait();
-            } catch (InterruptedException e){
-
-            }
-            isOpen = false;
-        }
+        isOpen = false;
     }
 
 }
