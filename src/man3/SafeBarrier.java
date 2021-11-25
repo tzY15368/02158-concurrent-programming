@@ -7,7 +7,7 @@ package man3;
 class SafeBarrier extends Barrier {
     int arrived = 0;
     boolean active = false;
-    boolean canGo = true;
+    boolean shouldStop = false;
     public SafeBarrier(CarDisplayI cd) {
         super(cd);
     }
@@ -15,16 +15,24 @@ class SafeBarrier extends Barrier {
     @Override
     public synchronized void sync(int no) throws InterruptedException {
         if(!active)return;
-        arrived++;
-        if(arrived < 9){
-            canGo = false;
-            while(canGo==false){
-                wait();
-            }
-        } else {
 
-            arrived =  0;
-            canGo = true;
+        while (active && shouldStop) {
+            wait();
+        }
+        arrived++;
+
+        if (arrived == 9) {
+            shouldStop = true;
+            notifyAll();
+        }
+
+        while (active && !shouldStop) {
+            wait();
+        }
+        arrived--;
+
+        if (arrived == 0) {
+            shouldStop = false;
             notifyAll();
         }
     }
@@ -37,8 +45,6 @@ class SafeBarrier extends Barrier {
     @Override
     public synchronized void off() {
         this.active = false;
-        this.arrived = 0;
-        this.canGo = true;
         notifyAll();
     }
 
